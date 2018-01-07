@@ -7,7 +7,7 @@
 #define MOMENTARY 0
 #define LATCHING 1
 #define INTPIN A2
-#define SPEAKER 5
+#define SPEAKER 6
 
 #define NUMTRELLIS 1
 #define numKeys (NUMTRELLIS * 16)
@@ -37,6 +37,21 @@ void setup()
 void loop()
 {
     delay(30);
+    Serial.println("Running loop");
+    strip.setPixelColor(0, 0, 0, 0);
+    strip.show();
+    // digitalWrite(SPEAKER, HIGH);
+    playNote(1);
+    delay(200);
+    // digitalWrite(SPEAKER, LOW);
+    playNote(2);
+    delay(200);
+    // digitalWrite(SPEAKER, HIGH);
+    playNote(3);
+    strip.setPixelColor(0, 0, 0, 255);
+    delay(300);
+    strip.show();
+    return;
 
     if (trellis.readSwitches())
     {

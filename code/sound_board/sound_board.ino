@@ -1,28 +1,19 @@
-#include <Adafruit_NeoPixel.h>
 #include <Wire.h>
 #include "Adafruit_Trellis.h"
 #include "pitches.h"
 
-#define NEOPIN 8
-#define MOMENTARY 0
-#define LATCHING 1
-#define INTPIN A2
-#define SPEAKER 6
+#define INTPIN A4
+#define SPEAKER 3
 
 #define NUMTRELLIS 1
 #define numKeys (NUMTRELLIS * 16)
-#define MODE MOMENTARY
 
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(1, NEOPIN, NEO_GRB + NEO_KHZ800);
 Adafruit_Trellis matrix0 = Adafruit_Trellis();
 Adafruit_TrellisSet trellis = Adafruit_TrellisSet(&matrix0);
 
 void setup()
 {
     Serial.begin(9600);
-
-    strip.begin();
-    strip.show();
 
     pinMode(INTPIN, INPUT);
     digitalWrite(INTPIN, HIGH);
@@ -36,22 +27,19 @@ void setup()
 
 void loop()
 {
-    delay(30);
-    Serial.println("Running loop");
-    strip.setPixelColor(0, 0, 0, 0);
-    strip.show();
-    // digitalWrite(SPEAKER, HIGH);
-    playNote(1);
-    delay(200);
-    // digitalWrite(SPEAKER, LOW);
-    playNote(2);
-    delay(200);
-    // digitalWrite(SPEAKER, HIGH);
-    playNote(3);
-    strip.setPixelColor(0, 0, 0, 255);
-    delay(300);
-    strip.show();
-    return;
+    delay(30); // this delay is required. Not totally sure why, but everything breaks if you don't include it :O
+
+    // Serial.println("Running loop");
+    // digitalWrite(13, HIGH);
+    // playNote(1);
+    // delay(200);
+    // playNote(2);
+    // delay(200);
+    // playNote(3);
+    // digitalWrite(13, LOW);
+    // delay(300);
+    // trellisStartupDisplay();
+    // return;
 
     if (trellis.readSwitches())
     {
@@ -63,7 +51,6 @@ void loop()
                 Serial.println(i);
                 trellis.setLED(i);
                 playNote(i);
-                strip.setPixelColor(0, 0, 0, 0);
             }
 
             if (trellis.justReleased(i))
@@ -71,28 +58,30 @@ void loop()
                 Serial.print("^");
                 Serial.println(i);
                 trellis.clrLED(i);
-                strip.setPixelColor(0, 255, 0, 255);
             }
         }
         trellis.writeDisplay();
-        strip.show();
     }
 }
 
 void trellisStartupDisplay()
 {
-
+    int stepDelay = 50;
     for (uint8_t i = 0; i < numKeys; i++)
     {
+        Serial.print("Trellis led on: ");
+        Serial.println(i);
         trellis.setLED(i);
         trellis.writeDisplay();
-        delay(50);
+        delay(stepDelay);
     }
     for (uint8_t i = 0; i < numKeys; i++)
     {
+        Serial.print("Trellis led off: ");
+        Serial.println(i);
         trellis.clrLED(i);
         trellis.writeDisplay();
-        delay(50);
+        delay(stepDelay);
     }
 }
 

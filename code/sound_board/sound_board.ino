@@ -29,18 +29,6 @@ void loop()
 {
     delay(30); // this delay is required. Not totally sure why, but everything breaks if you don't include it :O
 
-    // Serial.println("Running loop");
-    // digitalWrite(13, HIGH);
-    // playNote(1);
-    // delay(200);
-    // playNote(2);
-    // delay(200);
-    // playNote(3);
-    // digitalWrite(13, LOW);
-    // delay(300);
-    // trellisStartupDisplay();
-    // return;
-
     if (trellis.readSwitches())
     {
         for (uint8_t i = 0; i < numKeys; i++)
@@ -73,6 +61,7 @@ void trellisStartupDisplay()
         Serial.println(i);
         trellis.setLED(i);
         trellis.writeDisplay();
+        playNote(i);
         delay(stepDelay);
     }
     for (uint8_t i = 0; i < numKeys; i++)

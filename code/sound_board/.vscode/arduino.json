@@ -1,5 +1,5 @@
 {
-    "board": "adafruit:avr:feather32u4",
-    "port": "/dev/cu.usbmodem1421",
+    "board": "adafruit:samd:adafruit_trinket_m0",
+    "port": "/dev/cu.usbmodem1411",
     "sketch": "sound_board.ino"
 }

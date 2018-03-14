@@ -3,12 +3,14 @@
         {
             "name": "Mac",
             "includePath": [
-                "/Users/cschmitz/Library/Arduino15/packages/adafruit/hardware/samd/1.0.18/cores/arduino"
+                "/Users/cschmitz/Library/Arduino15/packages/adafruit/hardware/samd/1.0.18/cores/arduino",
+                "/Users/cschmitz/Library/Arduino15/packages/adafruit/hardware/samd/1.0.21/cores/arduino"
             ],
             "browse": {
                 "limitSymbolsToIncludedHeaders": false,
                 "path": [
-                    "/Users/cschmitz/Library/Arduino15/packages/adafruit/hardware/samd/1.0.18/cores/arduino"
+                    "/Users/cschmitz/Library/Arduino15/packages/adafruit/hardware/samd/1.0.18/cores/arduino",
+                    "/Users/cschmitz/Library/Arduino15/packages/adafruit/hardware/samd/1.0.21/cores/arduino"
                 ]
             },
             "intelliSenseMode": "clang-x64",

@@ -8,6 +8,7 @@
 #define NUMTRELLIS 1
 #define numKeys (NUMTRELLIS * 16)
 
+
 Adafruit_Trellis matrix0 = Adafruit_Trellis();
 Adafruit_TrellisSet trellis = Adafruit_TrellisSet(&matrix0);
 
@@ -28,6 +29,9 @@ void setup()
 void loop()
 {
     delay(30); // this delay is required. Not totally sure why, but everything breaks if you don't include it :O
+
+    howFarWillIGo();
+    return;
 
     if (trellis.readSwitches())
     {
@@ -145,4 +149,48 @@ void playNote(uint8_t i)
     }
 
     tone(SPEAKER, note, duration);
+}
+
+void howFarWillIGo()
+{
+
+    int melody[] = {
+            NOTE_F3, NOTE_G3, NOTE_A3,
+            NOTE_F3, NOTE_G3, NOTE_A3,
+            NOTE_F3, NOTE_G3, NOTE_A3,
+            REST,
+            NOTE_F3, NOTE_C4, NOTE_G3,
+            REST,
+            NOTE_A3, NOTE_C4, NOTE_D4, NOTE_A3, NOTE_G3,
+            REST,
+            NOTE_A3, NOTE_C4, NOTE_D4, NOTE_A3, NOTE_G3,
+            REST,REST
+        };
+
+    int durations[] = {
+            8,8,4,
+            8,8,4,
+            8,8,4,
+            4,
+            4,2,2,
+            4,
+            4,4,4,2,2,
+            4,
+            4,4,4,2,2,
+            1,
+        };
+
+
+    for (int note = 0; note < 26; note++)
+    {
+        int noteDuration = 1000 / durations[note];
+        int pause = noteDuration * 1.30;
+
+        tone(SPEAKER, melody[note], noteDuration);
+        delay(pause);
+
+        noTone(SPEAKER);
+    }
+
+    delay(500);
 }

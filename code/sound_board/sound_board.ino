@@ -30,7 +30,8 @@ void loop()
 {
     delay(30); // this delay is required. Not totally sure why, but everything breaks if you don't include it :O
 
-    howFarWillIGo();
+    // howFarWillIGo();
+    rememberMe();
     return;
 
     if (trellis.readSwitches())
@@ -184,6 +185,39 @@ void howFarWillIGo()
     for (int note = 0; note < 26; note++)
     {
         int noteDuration = 1000 / durations[note];
+        int pause = noteDuration * 1.30;
+
+        tone(SPEAKER, melody[note], noteDuration);
+        delay(pause);
+
+        noTone(SPEAKER);
+    }
+
+    delay(500);
+}
+
+void rememberMe()
+{
+
+    int melody[] = {
+            NOTE_F3, NOTE_A3, NOTE_F3, NOTE_C3, REST,
+            NOTE_A2, NOTE_AS2, NOTE_F3, NOTE_F3, NOTE_G3, NOTE_G3,
+            NOTE_F3, NOTE_A3, NOTE_F3, NOTE_C3, REST,
+            NOTE_A3, NOTE_AS3, NOTE_A3, NOTE_G3, NOTE_F3, NOTE_G3
+        };
+
+    int durations[] = {
+            8, 8, 8, 2, 8,
+            8, 8, 8, 8, 8, 8,
+            8, 8, 8, 2, 4,
+            8, 8, 8, 8, 8, 2,
+        };
+
+    int totalNotes = 22;
+
+    for (int note = 0; note < totalNotes; note++)
+    {
+        int noteDuration = 2000 / durations[note];
         int pause = noteDuration * 1.30;
 
         tone(SPEAKER, melody[note], noteDuration);

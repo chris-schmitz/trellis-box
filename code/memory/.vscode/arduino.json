@@ -1,0 +1,5 @@
+{
+    "board": "adafruit:samd:adafruit_trinket_m0",
+    "sketch": "memory.ino",
+    "port": "/dev/cu.usbmodem1411"
+}

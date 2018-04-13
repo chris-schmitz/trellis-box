@@ -1,8 +1,12 @@
+print("starting it up")
 import time
 import busio
+import digitalio
 from board import SCL, SDA
+import board
 from adafruit_trellis import Trellis
-import audioio
+import math
+import array
 
 # === Setup the trellis ===
 # Create the I2C interface
@@ -12,17 +16,18 @@ trellis = Trellis(i2c)  # 0x70 when no I2C address is supplied
 # ===
 
 # === Setup the speaker ===
-speaker = DigitialInOut(board.D8)
-speaker.direction = Direction.OUTPUT
+speaker = digitalio.DigitalInOut(board.D3)
+speaker.direction = digitalio.Direction.OUTPUT
 
 FREQUENCY = 440
-SAMPLERATE = 8000
+SAMPLERATE = 400
 # ===
 
 # === Create a sample sin wave ===
 length = SAMPLERATE
 sine_wave = array.array("H", [0] * length)
 for i in range(length):
+    print(i)
     sine_wave[i] = int(math.sin(math.pi * 2 * i / 18) * (2 ** 15) + 2 ** 15)
 
 

@@ -1,66 +1,54 @@
-print("starting it up")
-import time
-import busio
-import digitalio
-from board import SCL, SDA
 import board
-from adafruit_trellis import Trellis
-import math
-import array
+import pulseio
+import time
 
-# === Setup the trellis ===
-# Create the I2C interface
-i2c = busio.I2C(SCL, SDA)
-# Create a Trellis object for each board
-trellis = Trellis(i2c)  # 0x70 when no I2C address is supplied
+# Move to pitches.py
+pitches = {
+    "C": 261,
+    "C#": 277,
+    "D": 293,
+    "Eb": 311,
+    "E": 329,
+    "F": 349,
+    "F#": 370,
+    "G": 392,
+    "G#": 415,
+    "A": 4400,
+    "Bb": 466,
+    "B": 493,
+    # "C": 261.6,
+    # "C#": 277.2,
+    # "D": 293.7,
+    # "Eb": 311.1,
+    # "E": 329.6,
+    # "F": 349.2,
+    # "F#": 370.0,
+    # "G": 392.0,
+    # "G#": 415.3,
+    # "A": 440.0,
+    # "Bb": 466.2,
+    # "B": 493.9,
+}
+
+
+# === Initializing the speaker ===
+speaker = pulseio.PWMOut(board.D3, variable_frequency=True)
+
+# === setting up our frequency and duty cycle ===
+OFF = 0
+ON = 2**15
+# So I _believe_ this is how we control the amount of voltage going to the speaker
+# test it out with the oscilloscope and re-read:
+# https://learn.sparkfun.com/tutorials/pulse-width-modulation/duty-cycle
 # ===
 
-# === Setup the speaker ===
-speaker = digitalio.DigitalInOut(board.D3)
-speaker.direction = digitalio.Direction.OUTPUT
+for note, frequency in pitches.items():
+    print("===")
+    print(note)
+    print(frequency)
 
-FREQUENCY = 440
-SAMPLERATE = 400
-# ===
+    speaker.frequency = frequency
+    speaker.duty_cycle = ON
 
-# === Create a sample sin wave ===
-length = SAMPLERATE
-sine_wave = array.array("H", [0] * length)
-for i in range(length):
-    print(i)
-    sine_wave[i] = int(math.sin(math.pi * 2 * i / 18) * (2 ** 15) + 2 ** 15)
-
-
-pressedButtons = set()
-while True:
-    time.sleep(.1)  # necessary for reading buttons
-
-    justPressed, released = trellis.read_buttons()
-    sample = audioio.AudioOut(speaker, sine_wave)
-    sample.frequency = SAMPLERATE
-
-    for b in justPressed:
-        print('pressed: ', b)
-        trellis.led[b] = True
-        sample.play()
-    pressedButtons.update(justPressed)
-    for b in released:
-        print('released: ', b)
-        trellis.led[b] = False
-    pressedButtons.difference_update(released)
-    for b in pressedButtons:
-        print('still pressed: ', b)
-        trellis.led[b] = True
-
-    time.sleep(2)
-    sample.stop
-
-    # # Turn on every LED
-    # print('Turning all LEDs on...')
-    # trellis.led.fill(True)
-    # time.sleep(2)
-
-    # # Turn off every LED
-    # print('Turning all LEDs off...')
-    # trellis.led.fill(False)
-    # time.sleep(2)
+    time.sleep(.5)
+    speaker.duty_cycle = OFF

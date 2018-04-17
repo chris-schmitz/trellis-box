@@ -1,22 +1,11 @@
 import board
 import pulseio
 import time
+from lib import pitches
 
-# Move to pitches.py
-pitches = {
-    "C": 261,
-    "C#": 277,
-    "D": 293,
-    "Eb": 311,
-    "E": 329,
-    "F": 349,
-    "F#": 370,
-    "G": 392,
-    "G#": 415,
-    "A": 440,
-    "Bb": 466,
-    "B": 493,
-}
+
+def getPitches():
+    return pitches.pitches
 
 
 # === Initializing the speaker ===
@@ -30,24 +19,26 @@ ON = 2**15
 # https://learn.sparkfun.com/tutorials/pulse-width-modulation/duty-cycle
 # ===
 
-scale = ["C", "D", "E", "F", "G", "A", "B", "C"]
+scale = [
+    "3-C",
+    "3-D",
+    "3-E",
+    "3-F",
+    "3-G",
+    "3-A",
+    "3-B",
+    "4-C"
+]
+pitches = getPitches()
 
 for note in scale:
 
     frequency = pitches[note]
+    print(note)
+    print(frequency)
 
     speaker.frequency = frequency
     speaker.duty_cycle = ON
 
-    time.sleep(.5)
+    time.sleep(.2)
     speaker.duty_cycle = OFF
-# for note, frequency in pitches.items():
-#     print("===")
-#     print(note)
-#     print(frequency)
-
-#     speaker.frequency = frequency
-#     speaker.duty_cycle = ON
-
-#     time.sleep(.5)
-#     speaker.duty_cycle = OFF

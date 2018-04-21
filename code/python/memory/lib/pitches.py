@@ -1,4 +1,4 @@
-pitches = {
+maps = {
     # === Octive 0
     "0-C": 16,
     "0-C#": 17,

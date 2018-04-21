@@ -13,15 +13,21 @@ from lib import pitches
 i2c = busio.I2C(SCL, SDA)
 trellis = Trellis(i2c)
 
-# === Pull in the pitches ===
+# === Initializing the speaker ===
+speaker = pulseio.PWMOut(board.D3, variable_frequency=True)
+
+# === setting up our frequency and duty cycle ===
+OFF = 0
+ON = 2**15
+# So I _believe_ this is how we control the amount of voltage going to the speaker
+# test it out with the oscilloscope and re-read:
+# https://learn.sparkfun.com/tutorials/pulse-width-modulation/duty-cycle
+# ===
 
 
-# def getPitches():
-#     return pitches.pitches
-
+# Consider moving out to pitches.py
 def getListOfPitchesStartingWithOctave(oct):
-    # return a list of dictionaries for pitches starting at the C for the first octive
-    print(oct)
+    # Prob a more efficent way of doing this, but this will do for the moment.
     notes = [
         pitches.maps["%i-C" % oct],
         pitches.maps["%i-D" % oct],
@@ -38,50 +44,35 @@ def getListOfPitchesStartingWithOctave(oct):
         pitches.maps["%i-A" % (oct + 1)],
         pitches.maps["%i-B" % (oct + 1)],
         pitches.maps["%i-C" % (oct + 2)],
+        pitches.maps["%i-D" % (oct + 2)],
     ]
     return notes
 
 
-# === Initializing the speaker ===
-speaker = pulseio.PWMOut(board.D3, variable_frequency=True)
-
-# === setting up our frequency and duty cycle ===
-OFF = 0
-ON = 2**15
-# So I _believe_ this is how we control the amount of voltage going to the speaker
-# test it out with the oscilloscope and re-read:
-# https://learn.sparkfun.com/tutorials/pulse-width-modulation/duty-cycle
-# ===
-
-# pitches = getPitches()
+# === Grab a a list of notes (frequencies) we're going to associate with the trellis button indicies
+notes = getListOfPitchesStartingWithOctave(2)
 
 
-notes = getListOfPitchesStartingWithOctave(1)
-pressedButtons = set()
-
+# === And let's start listening for button presses
 while True:
-    time.sleep(.1)  # required
+    time.sleep(.01)  # required
 
     justPressed, released = trellis.read_buttons()
 
     # === add buttons that are pressed ===
     for b in justPressed:
-        print('pressed: ', b)
         trellis.led[b] = True
+
         note = notes[b]
         speaker.frequency = note
-        # speaker.duty_cycle = ON
-    pressedButtons.update(justPressed)
+        speaker.duty_cycle = ON
 
-    # === remove the butons that have been released
+        print('pressed: ', b)
+        print("playing note: ", note)
+
+    # === remove the butons that have been released ===
     for b in released:
-        print('released: ', b)
         trellis.led[b] = False
-    pressedButtons.difference_update(released)
-
-    for b in pressedButtons:
-        print('still pressed: ', b)
-        trellis.led[b] = True
-
-    if len(pressedButtons) == 0:
         speaker.duty_cycle = OFF
+
+        print('released: ', b)

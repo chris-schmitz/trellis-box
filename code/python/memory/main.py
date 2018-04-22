@@ -25,6 +25,47 @@ ON = 2**15
 # ===
 
 
+def startup():
+    chime = [
+        pitches.maps['4-C'],
+        pitches.maps['4-D'],
+        pitches.maps['4-E'],
+        pitches.maps['4-F'],
+        pitches.maps['4-G'],
+        pitches.maps['4-A'],
+        pitches.maps['4-B'],
+        pitches.maps['5-C'],
+        pitches.maps['5-D'],
+        pitches.maps['5-E'],
+        pitches.maps['5-F'],
+        pitches.maps['5-G'],
+        pitches.maps['5-A'],
+        pitches.maps['5-B'],
+        pitches.maps['6-C'],
+    ]
+
+    pause = .04
+
+    for index, note in enumerate(chime):
+        trellis.led[index] = True
+        speaker.frequency = note
+        speaker.duty_cycle = ON
+        time.sleep(pause)
+        speaker.duty_cycle = OFF
+    for index, note in enumerate(chime):
+        trellis.led[index] = False
+        time.sleep(pause)
+
+    trellis.led[15] = True
+    speaker.frequency = note
+    speaker.duty_cycle = ON
+    time.sleep(.08)
+    speaker.duty_cycle = OFF
+    trellis.led[15] = False
+
+
+startup()
+
 # === Grab a a list of notes (frequencies) we're going to associate with the trellis button indicies
 notes = pitches.getOctavesForTrellis(3)
 

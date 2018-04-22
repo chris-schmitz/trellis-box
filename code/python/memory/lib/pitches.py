@@ -125,3 +125,25 @@ maps = {
     "8-Bb": 7459,
     "8-B": 7902,
 }
+
+
+def getOctavesForTrellis(startingOctave):
+    notes = [
+        maps["%i-C" % startingOctave],
+        maps["%i-D" % startingOctave],
+        maps["%i-E" % startingOctave],
+        maps["%i-F" % startingOctave],
+        maps["%i-G" % startingOctave],
+        maps["%i-A" % startingOctave],
+        maps["%i-B" % startingOctave],
+        maps["%i-C" % (startingOctave + 1)],
+        maps["%i-D" % (startingOctave + 1)],
+        maps["%i-E" % (startingOctave + 1)],
+        maps["%i-F" % (startingOctave + 1)],
+        maps["%i-G" % (startingOctave + 1)],
+        maps["%i-A" % (startingOctave + 1)],
+        maps["%i-B" % (startingOctave + 1)],
+        maps["%i-C" % (startingOctave + 2)],
+        maps["%i-D" % (startingOctave + 2)],
+    ]
+    return notes

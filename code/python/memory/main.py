@@ -6,7 +6,7 @@ import digitalio
 import math
 from board import SCL, SDA
 from adafruit_trellis import Trellis
-from lib import pitches
+import pitches
 
 # === Setup the trellis ===
 # Create the I2C interface
@@ -25,32 +25,8 @@ ON = 2**15
 # ===
 
 
-# Consider moving out to pitches.py
-def getListOfPitchesStartingWithOctave(oct):
-    # Prob a more efficent way of doing this, but this will do for the moment.
-    notes = [
-        pitches.maps["%i-C" % oct],
-        pitches.maps["%i-D" % oct],
-        pitches.maps["%i-E" % oct],
-        pitches.maps["%i-F" % oct],
-        pitches.maps["%i-G" % oct],
-        pitches.maps["%i-A" % oct],
-        pitches.maps["%i-B" % oct],
-        pitches.maps["%i-C" % (oct + 1)],
-        pitches.maps["%i-D" % (oct + 1)],
-        pitches.maps["%i-E" % (oct + 1)],
-        pitches.maps["%i-F" % (oct + 1)],
-        pitches.maps["%i-G" % (oct + 1)],
-        pitches.maps["%i-A" % (oct + 1)],
-        pitches.maps["%i-B" % (oct + 1)],
-        pitches.maps["%i-C" % (oct + 2)],
-        pitches.maps["%i-D" % (oct + 2)],
-    ]
-    return notes
-
-
 # === Grab a a list of notes (frequencies) we're going to associate with the trellis button indicies
-notes = getListOfPitchesStartingWithOctave(2)
+notes = pitches.getOctavesForTrellis(2)
 
 
 # === And let's start listening for button presses

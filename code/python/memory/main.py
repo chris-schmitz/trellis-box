@@ -26,8 +26,7 @@ ON = 2**15
 
 
 # === Grab a a list of notes (frequencies) we're going to associate with the trellis button indicies
-notes = pitches.getOctavesForTrellis(2)
-
+notes = pitches.getOctavesForTrellis(3)
 
 # === And let's start listening for button presses
 while True:
@@ -43,12 +42,15 @@ while True:
         speaker.frequency = note
         speaker.duty_cycle = ON
 
+        print("===")
         print('pressed: ', b)
         print("playing note: ", note)
+        print("===")
 
     # === remove the butons that have been released ===
     for b in released:
         trellis.led[b] = False
-        speaker.duty_cycle = OFF
+        if len(justPressed) == 0:
+            speaker.duty_cycle = OFF
 
         print('released: ', b)

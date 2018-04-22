@@ -128,6 +128,20 @@ maps = {
 
 
 def getOctavesForTrellis(startingOctave):
+    '''
+    (int) -> list
+
+    startOctave: an integer between 0 and 8.
+
+    returns a list of 24 frequencies corresponding to the buttons on the trellis.
+    '''
+
+    if type(startingOctave) is not int:
+        raise ValueError("startingOctave must be an integer")
+
+    if startingOctave < 0 or startingOctave > 8:
+        raise ValueError("starting Octave must be an integer between 0 and 8")
+
     notes = [
         maps["%i-C" % startingOctave],
         maps["%i-D" % startingOctave],

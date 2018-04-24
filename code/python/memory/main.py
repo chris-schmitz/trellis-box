@@ -148,6 +148,26 @@ class MatchingGame:
         self.speaker.duty_cycle = OFF
         time.sleep(1)
 
+    def evaluateButtonPress(self, buttonPressed):
+        print("time to compare")
+        self.trellis.led[buttonPressed] = False
+
+        if buttonPressed == self.indiciesToMatch[self.currentComparisonIndex]:
+            print("the user pressed the correct button!")
+            self.currentComparisonIndex += 1
+
+            if self.currentComparisonIndex >= len(self.indiciesToMatch):
+                print("user matched all buttons!")
+                self.success()
+                self.addNewNote()
+                self.currentComparisonIndex = 0
+
+        else:
+            print("the user pressed the wrong button")
+            self.failure()
+            self.reset()
+            self.addNewNote()
+
     def _getNotes(self):
         self.notes = self.pitches.getOctavesForTrellis(3)
 
@@ -167,7 +187,6 @@ while True:
 
     # === add buttons that are pressed ===
     for b in justPressed:
-        userPressed = b
         trellis.led[b] = True
 
         note = notes[b]
@@ -176,30 +195,12 @@ while True:
 
     # === remove the butons that have been released ===
     for b in released:
+        userPressed = b
         trellis.led[b] = False
         if len(justPressed) == 0:
             speaker.duty_cycle = OFF
-        # print('released: ', b)
 
     # === matching game ===
     if userPressed is not None:
-        print("time to compare")
-        trellis.led[userPressed] = False
-
-        if userPressed == game.indiciesToMatch[game.currentComparisonIndex]:
-            print("the user pressed the correct button!")
-            game.currentComparisonIndex += 1
-
-            if game.currentComparisonIndex >= len(game.indiciesToMatch):
-                print("user matched all buttons!")
-                game.success()
-                game.addNewNote()
-                game.currentComparisonIndex = 0
-
-        else:
-            print("the user pressed the wrong button")
-            game.failure()
-            game.reset()
-            game.addNewNote()
-
+        game.evaluateButtonPress(userPressed)
         userPressed = None

@@ -5,8 +5,9 @@ import time
 import busio
 import digitalio
 from board import SCL, SDA
-from adafruit_trellis import Trellis
 import pitches
+from adafruit_trellis import Trellis
+
 
 # === Setup the trellis ===
 # Create the I2C interface

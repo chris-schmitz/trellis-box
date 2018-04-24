@@ -72,78 +72,92 @@ startup()
 notes = pitches.getOctavesForTrellis(3)
 
 # === Matching game ===
-indiciesToMatch = []
-currentComparisonIndex = 0
-userPressed = None
 
 
-def reset():
-    print("resetting")
-    indiciesToMatch[:] = []
-    currentButton = None
-    currentComparisonIndex = 0
+class MatchingGame:
+    def __init__(self, trellis, speaker, pitches):
+        self.trellis = trellis
+        self.speaker = speaker
+        self.pitches = pitches
+        self.notes = []
 
+        self.indiciesToMatch = []
+        self.currentComparisonIndex = 0
+        self.currentButton = None
 
-def addNewNote():
-    print("adding a new note")
-    newIndex = random.randint(0, 15)
-    indiciesToMatch.append(newIndex)
+        self._getNotes()
 
-    print("New note %d" % newIndex)
-    for index in indiciesToMatch:
-        trellis.led[index] = True
-        speaker.frequency = notes[index]
-        speaker.duty_cycle = ON
+    def reset(self):
+        print("resetting")
+        self.indiciesToMatch[:] = []
+        self.currentButton = None
+        self.currentComparisonIndex = 0
+
+    def addNewNote(self):
+        print("adding a new note")
+        newIndex = random.randint(0, 15)
+        self.indiciesToMatch.append(newIndex)
+
+        print("New note %d" % newIndex)
+        for index in self.indiciesToMatch:
+            self.trellis.led[index] = True
+            self.speaker.frequency = self.notes[index]
+            speaker.duty_cycle = ON
+            time.sleep(1)
+            self.speaker.duty_cycle = OFF
+            self.trellis.led[index] = False
+
+    def success(self):
+        self.trellis.led[5] = True
+        self.trellis.led[10] = True
+        self.speaker.frequency = self.pitches.maps["3-C"]
+        self.speaker.duty_cycle = ON
+        time.sleep(.2)
+
+        self.trellis.led.fill(False)
+        self.trellis.led[6] = True
+        self.trellis.led[9] = True
+        self.speaker.frequency = self.pitches.maps["4-C"]
+        time.sleep(.2)
+
+        self.trellis.led.fill(True)
+        self.speaker.frequency = self.pitches.maps["5-C"]
+
+        time.sleep(.5)
+        self.trellis.led.fill(False)
+        self.speaker.duty_cycle = OFF
+        time.sleep(.5)
+
+    def failure(self):
+        self.trellis.led[0] = True
+        self.trellis.led[5] = True
+        self.trellis.led[10] = True
+        self.trellis.led[15] = True
+
+        self.trellis.led[3] = True
+        self.trellis.led[6] = True
+        self.trellis.led[9] = True
+        self.trellis.led[12] = True
+        self.speaker.frequency = self.pitches.maps["3-C"]
+        time.sleep(.2)
+        self.speaker.frequency = self.pitches.maps["2-B"]
+        time.sleep(.2)
+        self.speaker.frequency = self.pitches.maps["2-A"]
+        time.sleep(.5)
+        self.trellis.led.fill(False)
+        self.speaker.duty_cycle = OFF
         time.sleep(1)
-        speaker.duty_cycle = OFF
-        trellis.led[index] = False
+
+    def _getNotes(self):
+        self.notes = self.pitches.getOctavesForTrellis(3)
 
 
-def success():
-    trellis.led[5] = True
-    trellis.led[10] = True
-    speaker.frequency = pitches.maps["3-C"]
-    speaker.duty_cycle = ON
-    time.sleep(.2)
+game = MatchingGame(trellis, speaker, pitches)
 
-    trellis.led.fill(False)
-    trellis.led[6] = True
-    trellis.led[9] = True
-    speaker.frequency = pitches.maps["4-C"]
-    time.sleep(.2)
+game.reset()
+game.addNewNote()
 
-    trellis.led.fill(True)
-    speaker.frequency = pitches.maps["5-C"]
-
-    time.sleep(.5)
-    trellis.led.fill(False)
-    speaker.duty_cycle = OFF
-    time.sleep(.5)
-
-
-def failure():
-    trellis.led[0] = True
-    trellis.led[5] = True
-    trellis.led[10] = True
-    trellis.led[15] = True
-
-    trellis.led[3] = True
-    trellis.led[6] = True
-    trellis.led[9] = True
-    trellis.led[12] = True
-    speaker.frequency = pitches.maps["3-C"]
-    time.sleep(.2)
-    speaker.frequency = pitches.maps["2-B"]
-    time.sleep(.2)
-    speaker.frequency = pitches.maps["2-A"]
-    time.sleep(.5)
-    trellis.led.fill(False)
-    speaker.duty_cycle = OFF
-    time.sleep(1)
-
-
-reset()
-addNewNote()
+userPressed = None
 
 # === And let's start listening for button presses
 while True:
@@ -160,11 +174,6 @@ while True:
         speaker.frequency = note
         speaker.duty_cycle = ON
 
-        print("===")
-        print('pressed: ', b)
-        print("playing note: ", note)
-        print("===")
-
     # === remove the butons that have been released ===
     for b in released:
         trellis.led[b] = False
@@ -177,24 +186,20 @@ while True:
         print("time to compare")
         trellis.led[userPressed] = False
 
-        print("user pressed: %i" % b)
-        print("index to match: %i" % indiciesToMatch[currentComparisonIndex])
-        print("all indexes to match: ")
-        print(indiciesToMatch)
-        if userPressed == indiciesToMatch[currentComparisonIndex]:
+        if userPressed == game.indiciesToMatch[game.currentComparisonIndex]:
             print("the user pressed the correct button!")
-            currentComparisonIndex += 1
+            game.currentComparisonIndex += 1
 
-            if currentComparisonIndex >= len(indiciesToMatch):
+            if game.currentComparisonIndex >= len(game.indiciesToMatch):
                 print("user matched all buttons!")
-                success()
-                addNewNote()
-                currentComparisonIndex = 0
+                game.success()
+                game.addNewNote()
+                game.currentComparisonIndex = 0
 
         else:
             print("the user pressed the wrong button")
-            failure()
-            reset()
-            addNewNote()
+            game.failure()
+            game.reset()
+            game.addNewNote()
 
         userPressed = None

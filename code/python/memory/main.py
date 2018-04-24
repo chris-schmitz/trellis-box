@@ -1,14 +1,12 @@
+from MatchingGame import MatchingGame
 import board
 import pulseio
 import time
-import random
 import busio
 import digitalio
-import math
 from board import SCL, SDA
 from adafruit_trellis import Trellis
 import pitches
-import TrellisMatchingGame
 
 # === Setup the trellis ===
 # Create the I2C interface

@@ -12,6 +12,10 @@ const toCopy = [
     {
         from: path.join(projectPath, "lib", "pitches.py"),
         to: path.join(trinketPath, "lib", "pitches.py")
+    },
+    {
+        from: path.join(projectPath, "lib", "TrellisMatchingGame.py"),
+        to: path.join(trinketPath, "lib", "TrellisMatchingGame.py")
     }
 ]
 

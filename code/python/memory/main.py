@@ -76,10 +76,11 @@ notes = pitches.getOctavesForTrellis(3)
 
 game = MatchingGame(trellis, speaker, pitches)
 
-game.reset()
-game.addNewNote()
-
+# game.startNewGame()
 userPressed = None
+secretCode = [0, 1, 2]
+codeCheckIndex = 0
+enableGameplay = False
 
 # === And let's start listening for button presses
 while True:
@@ -104,5 +105,21 @@ while True:
 
     # === matching game ===
     if userPressed is not None:
-        game.evaluateButtonPress(userPressed)
+        if enableGameplay:
+            game.evaluateButtonPress(userPressed)
+
+        if (enableGameplay == False):
+            print("codeCheckIndex: %i" % codeCheckIndex)
+            if userPressed == secretCode[codeCheckIndex]:
+                codeCheckIndex += 1
+            else:
+                codeCheckIndex = 0
+
+            if codeCheckIndex >= len(secretCode):
+                print("enable gameplay!")
+                enableGameplay = True
+                game.success()
+                game.startNewGame()
+                userPressed = None
+
         userPressed = None

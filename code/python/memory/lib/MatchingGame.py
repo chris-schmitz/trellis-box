@@ -22,6 +22,10 @@ class MatchingGame:
 
         self._getNotes()
 
+    def startNewGame(self):
+        self.reset()
+        self.addNewNote()
+
     def reset(self):
         print("resetting")
         self.indiciesToMatch[:] = []
@@ -73,6 +77,7 @@ class MatchingGame:
         self.trellis.led[6] = True
         self.trellis.led[9] = True
         self.trellis.led[12] = True
+        self.speaker.duty_cycle = ON
         self.speaker.frequency = self.pitches.maps["3-C"]
         time.sleep(.2)
         self.speaker.frequency = self.pitches.maps["2-B"]
